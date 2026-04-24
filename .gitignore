@@ -1,2 +1,18 @@
 # vscode
 *.vscode-ctags
+*.vscode/
+
+# Игнорируем результаты компиляции
+*.o
+*.ko
+*.mod
+*.mod.c
+*.mod.o
+*.symvers
+*.order
+
+# Игнорируем скрытые файлы ядра (они начинаются с точки)
+.*.cmd
+.tmp_versions/
+modules.order
+Module.symvers
