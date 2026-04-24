@@ -10,7 +10,6 @@
 
 #define DISK_NAME "myramdisk"
 #define DISK_SIZE (50 * 1024 * 1024) // Размер нашего диска: 50 Мегабайт
-#define SECTOR_SIZE 512              // Размер одного сектора (стандарт для Linux)
 
 // Структура, которая описывает наше устройство
 struct my_ramdisk {
@@ -105,11 +104,11 @@ static int __init my_ramdisk_init(void)
     }
 
     // 4. Настраиваем очередь запросов blk-mq
-    err = blk_mq_alloc_sq_tag_set(&device->tag_set, &my_mq_ops, 128, BLK_MQ_F_SHOULD_MERGE);
+    err = blk_mq_alloc_sq_tag_set(&device->tag_set, &my_mq_ops, 128, 0);
     if (err) goto out_blkdev;
 
     // 5. Создаем структуру диска (gendisk) в ядре (Новый API для ядра 6.x)
-    device->gd = blk_mq_alloc_disk(&device->tag_set, NULL);
+    device->gd = blk_mq_alloc_disk(&device->tag_set, NULL, NULL);
     if (IS_ERR(device->gd)) {
         err = PTR_ERR(device->gd);
         goto out_tags;
