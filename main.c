@@ -13,9 +13,8 @@ static int __init my_ramdisk_init(void){
     return 0;
 }
 
-static int __exit my_ramdisk_exit(void){
+static void __exit my_ramdisk_exit(void){
     pr_info("Disk deactivate");
-    return 0;
 }
 
 module_init(my_ramdisk_init);
