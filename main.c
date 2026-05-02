@@ -9,12 +9,12 @@
 #include <linux/blk-mq.h>
 
 static int __init my_ramdisk_init(void){
-    pr_info("Disk activate");
+    pr_info("Disk activate\n");
     return 0;
 }
 
 static void __exit my_ramdisk_exit(void){
-    pr_info("Disk deactivate");
+    pr_info("Disk deactivate\n");
 }
 
 module_init(my_ramdisk_init);
