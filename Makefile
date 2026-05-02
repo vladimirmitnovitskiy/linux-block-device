@@ -1,4 +1,4 @@
-obj-m := RAM-BD.o
+obj-m := main.o
 
 # Определяем путь к заголовочным файлам текущего ядра
 KDIR := /lib/modules/$(shell uname -r)/build
