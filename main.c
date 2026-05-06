@@ -17,7 +17,7 @@ module_param(disk_size_mb, int, 0444);
 MODULE_PARM_DESC(disk_size_mb, "Размер RAM-диска в мегабайтах");
 
 struct my_ramdisk {
-    int size;
+    size_t size;
     u8 *data;
     struct blk_mq_tag_set tag_set;
     struct gendisk *gd;
@@ -71,10 +71,15 @@ static const struct block_device_operations my_fops = {
 static int __init my_ramdisk_init(void){
     int err;
 
+    if (disk_size_mb <= 0) {
+        pr_err("%s: ОШИБКА! Недопустимый размер диска: %d MB\n", disk_name, disk_size_mb);
+        return -EINVAL;
+    }
+
     device = kzalloc(sizeof(struct my_ramdisk), GFP_KERNEL);
     if (!device) return -ENOMEM;
 
-    device->size = disk_size_mb * 1024 * 1024;
+    device->size = (size_t)disk_size_mb * 1024 * 1024;
     device->data = vmalloc(device->size);
     if (!device->data){
         pr_err("%s: ОШИБКА! Не удалось выделить %d МБ оперативной памяти.\n", disk_name, disk_size_mb);
@@ -110,7 +115,7 @@ static int __init my_ramdisk_init(void){
     if (err) goto out_disk;
 
 
-    pr_info("%s: Disk activate! Размер: %d MB\n", disk_name, major_num);
+    pr_info("%s: Disk activate! Размер: %zu MB\n", disk_name, device->size / 1024 / 1024);
     return 0;
 
 out_disk:
