@@ -21,7 +21,7 @@ struct my_ramdisk {
 static struct my_ramdisk *device = NULL;
 static int major_num = 0;
 
-static blk_status_t my_queue_rq(struct bls_mq_hw_ctx *hctx, const struct blk_mq_queue_data *bd)
+static blk_status_t my_queue_rq(struct blk_mq_hw_ctx *hctx, const struct blk_mq_queue_data *bd)
 {
     struct request *req = bd->rq;
     struct bio_vec bvec;
@@ -88,7 +88,7 @@ static int __init my_ramdisk_init(void){
 
     device->gd = blk_mq_alloc_disk(&device->tag_set, NULL, NULL);
     if (IS_ERR(device->gd)) {
-        err = PTR-ERR(device->gd);
+        err = PTR_ERR(device->gd);
         goto out_tags;
     }
 
