@@ -22,7 +22,7 @@ static int major_num = 0;
 
 
 static int __init my_ramdisk_init(void){
-    device = kzalloc(sizeof(my_ramdisk), GFP_KERNEL);
+    device = kzalloc(sizeof(struct my_ramdisk), GFP_KERNEL);
     if (!device) return -ENOMEM;
 
     device->size = DISK_SIZE;
