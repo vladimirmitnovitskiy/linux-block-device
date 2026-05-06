@@ -8,8 +8,13 @@
 #include <linux/blkdev.h>
 #include <linux/blk-mq.h>
 
-#define DISK_SIZE (50 * 1024 * 1024)
-#define DISK_NAME "myramdisk"
+static char *disk_name = "myramdisk";
+module_param(disk_name, charp, 0444);
+MODULE_PARM_DESC(disk_name, "Название виртуального диска (появится в lsblk)");
+
+static int disk_size_mb = 50;
+module_param(disk_size_mb, int, 0444);
+MODULE_PARM_DESC(disk_size_mb, "Размер RAM-диска в мегабайтах");
 
 struct my_ramdisk {
     int size;
@@ -69,14 +74,15 @@ static int __init my_ramdisk_init(void){
     device = kzalloc(sizeof(struct my_ramdisk), GFP_KERNEL);
     if (!device) return -ENOMEM;
 
-    device->size = DISK_SIZE;
+    device->size = disk_size_mb * 1024 * 1024;
     device->data = vmalloc(device->size);
     if (!device->data){
+        pr_err("%s: ОШИБКА! Не удалось выделить %d МБ оперативной памяти.\n", disk_name, disk_size_mb);
         kfree(device);
         return -ENOMEM;
     }
 
-    major_num = register_blkdev(0, DISK_NAME);
+    major_num = register_blkdev(0, disk_name);
     if (major_num < 0){
         vfree(device->data);
         kfree(device);
@@ -97,14 +103,14 @@ static int __init my_ramdisk_init(void){
     device->gd->minors = 1;
     device->gd->fops = &my_fops;
     device->gd->private_data = device;
-    snprintf(device->gd->disk_name, 32, DISK_NAME);
+    snprintf(device->gd->disk_name, 32, disk_name);
     set_capacity(device->gd, device->size / SECTOR_SIZE);
 
     err = add_disk(device->gd);
     if (err) goto out_disk;
 
 
-    pr_info("myramdisk: Disk activate! Выделено 50 МБ памяти. Можорный номер: %d\n", major_num);
+    pr_info("%s: Disk activate! Размер: %d MB\n", disk_name, major_num);
     return 0;
 
 out_disk:
@@ -112,7 +118,7 @@ out_disk:
 out_tags:
     blk_mq_free_tag_set(&device->tag_set);
 out_blkdev:
-    unregister_blkdev(major_num, DISK_NAME);
+    unregister_blkdev(major_num, disk_name);
     vfree(device->data);
     kfree(device);
     return err;
@@ -124,7 +130,7 @@ static void __exit my_ramdisk_exit(void){
         put_disk(device->gd);
     }
     blk_mq_free_tag_set(&device->tag_set);
-    unregister_blkdev(major_num, DISK_NAME);
+    unregister_blkdev(major_num, disk_name);
 
     vfree(device->data);
     kfree(device);
