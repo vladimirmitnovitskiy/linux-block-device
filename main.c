@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-2.0
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/kernel.h>
@@ -39,21 +40,20 @@ static blk_status_t my_queue_rq(struct blk_mq_hw_ctx *hctx, const struct blk_mq_
 	blk_mq_start_request(req);
 
 	if (pos_sector + blk_rq_sectors(req) > (device->size / SECTOR_SIZE)) {
-	pr_err("%s: Request out of disk space!", disk_name);
-	blk_mq_end_request(req, BLK_STS_IOERR);
-	return BLK_STS_OK;
+		pr_err("%s: Request out of disk space!", disk_name);
+		blk_mq_end_request(req, BLK_STS_IOERR);
+		return BLK_STS_OK;
 	}
 
 	rq_for_each_segment(bvec, req, iter) {
-	len = bvec.bv_len;
-	buffer = page_address(bvec.bv_page) + bvec.bv_offset;
+		len = bvec.bv_len;
+		buffer = page_address(bvec.bv_page) + bvec.bv_offset;
 
-	if (dir == WRITE) {
-	    memcpy(device->data + (pos_sector * SECTOR_SIZE), buffer, len);
-	} else {
-	    memcpy(buffer, device->data + (pos_sector * SECTOR_SIZE), len);
-	}
-	pos_sector += len / SECTOR_SIZE;
+		if (dir == WRITE)
+			memcpy(device->data + (pos_sector * SECTOR_SIZE), buffer, len);
+		else
+			memcpy(buffer, device->data + (pos_sector * SECTOR_SIZE), len);
+		pos_sector += len / SECTOR_SIZE;
 	}
 
 	blk_mq_end_request(req, BLK_STS_OK);
@@ -73,37 +73,37 @@ static int __init my_ramdisk_init(void)
 	int err;
 
 	if (disk_size_mb <= 0) {
-	pr_err("%s: ERROR! Invalid disk size: %d MB\n", disk_name, disk_size_mb);
-	return -EINVAL;
+		pr_err("%s: ERROR! Invalid disk size: %d MB\n", disk_name, disk_size_mb);
+		return -EINVAL;
 	}
 
 	device = kzalloc(sizeof(struct my_ramdisk), GFP_KERNEL);
 	if (!device)
-	return -ENOMEM;
+		return -ENOMEM;
 
 	device->size = (size_t)disk_size_mb * 1024 * 1024;
 	device->data = vmalloc(device->size);
 	if (!device->data) {
-	pr_err("%s: ERROR! Failed to allocate %d MB of RAM.\n", disk_name, disk_size_mb);
-	kfree(device);
-	return -ENOMEM;
+		pr_err("%s: ERROR! Failed to allocate %d MB of RAM.\n", disk_name, disk_size_mb);
+		kfree(device);
+		return -ENOMEM;
 	}
 
 	major_num = register_blkdev(0, disk_name);
 	if (major_num < 0) {
-	vfree(device->data);
-	kfree(device);
-	return major_num;
+		vfree(device->data);
+		kfree(device);
+		return major_num;
 	}
 
 	err = blk_mq_alloc_sq_tag_set(&device->tag_set, &my_mq_ops, 128, 0);
 	if (err)
-	goto out_blkdev;
+		goto out_blkdev;
 
 	device->gd = blk_mq_alloc_disk(&device->tag_set, NULL, NULL);
 	if (IS_ERR(device->gd)) {
-	err = PTR_ERR(device->gd);
-	goto out_tags;
+		err = PTR_ERR(device->gd);
+		goto out_tags;
 	}
 
 	device->gd->major = major_num;
@@ -116,7 +116,7 @@ static int __init my_ramdisk_init(void)
 
 	err = add_disk(device->gd);
 	if (err)
-	goto out_disk;
+		goto out_disk;
 
 
 	pr_info("%s: Disk activate! Size: %zu MB\n", disk_name, device->size / 1024 / 1024);
@@ -136,8 +136,8 @@ out_blkdev:
 static void __exit my_ramdisk_exit(void)
 {
 	if (device->gd) {
-	del_gendisk(device->gd);
-	put_disk(device->gd);
+		del_gendisk(device->gd);
+		put_disk(device->gd);
 	}
 	blk_mq_free_tag_set(&device->tag_set);
 	unregister_blkdev(major_num, disk_name);
