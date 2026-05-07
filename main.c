@@ -111,7 +111,7 @@ static int __init my_ramdisk_init(void)
 	device->gd->minors = 1;
 	device->gd->fops = &my_fops;
 	device->gd->private_data = device;
-	snprintf(device->gd->disk_name, 32, disk_name);
+	snprintf(device->gd->disk_name, 32, "%s", disk_name);
 	set_capacity(device->gd, device->size / SECTOR_SIZE);
 
 	err = add_disk(device->gd);
