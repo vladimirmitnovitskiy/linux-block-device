@@ -16,3 +16,9 @@
 .tmp_versions/
 modules.order
 Module.symvers
+
+
+test_app
+main1.c
+checkpatch.pl
+scripts/
