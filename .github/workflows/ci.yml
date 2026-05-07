@@ -1,0 +1,33 @@
+name: Linux Kernel Module CI
+
+on:
+  push:
+    branches: [ "main", "master" ]
+  pull_request:
+    branches: [ "main", "master" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Install Kernel Headers and Build Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y build-essential linux-headers-generic curl perl
+
+    - name: Download checkpatch.pl (Linter)
+      run: |
+        wget https://raw.githubusercontent.com/torvalds/linux/master/scripts/checkpatch.pl
+        chmod +x checkpatch.pl
+
+    - name: Run Linter (Style Check)
+      run: |
+        ./checkpatch.pl --no-tree -f main.c || true
+        # '|| true' нужно, чтобы сборка не падала из-за мелких ошибок стиля на первом этапе
+
+    - name: Build Kernel Module and Test App
+      run: make
