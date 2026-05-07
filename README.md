@@ -16,15 +16,35 @@ make
 
 # Load
 
-Run `sudo insmod ramdisk.ko disk_name="<your_disk_name>" disk_size_mb=<your_disk_size_in_mb>`
+```bash
+sudo insmod ramdisk.ko disk_name="<your_disk_name>" disk_size_mb=<size_in_mb>
+```
+After loading you should see in `dmesg`:
 
-You will see in `dmesg`: `<your_disk_name>: Disk activate! Size: <your_disk_size_in_mb>` and you will see `<your_disk_name>` in `lsblk`.
+```bash
+<your_disk_name>: Disk activate! Size: <your_disk_size_in_mb>
+```
+and the device will appear in:
+
+```bash
+lsblk
+```
 
 
 
 # Test
 
-Run `sudo insmod ramdisk.ko` and run `./test_app`, then run `rmmod ramdisk`.
+```bash
+sudo insmod ramdisk.ko
+./test_app
+sudo rmmod ramdisk
+```
+
+# Unload
+
+```bash
+sudo rmmod ramdisk
+```
 
 ## License
 
