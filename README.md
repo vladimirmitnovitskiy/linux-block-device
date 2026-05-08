@@ -62,12 +62,6 @@ sudo ./test_app
 sudo rmmod ramdisk
 ```
 
-# Unload
-
-```bash
-sudo rmmod ramdisk
-```
-
 ## License
 
 GPL-2.0     
