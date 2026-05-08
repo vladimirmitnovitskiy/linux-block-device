@@ -21,7 +21,7 @@ make
 You can specify the disk name and size (in megabytes) via module parameters. By default, it creates a 50MB disk named `myramdisk`.
 
 ```bash
-sudo insmod ramdisk.ko disk_name="<your_disk_name>" disk_size=<size_in_mb>
+sudo insmod ramdisk.ko disk_name="<your_disk_name>" disk_size_mb=<size_in_mb>
 ```
 
 Check the kernel logs to verify succeful initialization:
