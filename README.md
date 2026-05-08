@@ -14,29 +14,51 @@ Run from repository root:
 make
 ```
 
-# Load
+# Usage
+
+### 1. Load the module
+
+You can specify the disk name and size (in megabytes) via module parameters. By default, it creates a 50MB disk named `myramdisk`.
 
 ```bash
-sudo insmod ramdisk.ko disk_name="<your_disk_name>" disk_size_mb=<size_in_mb>
+sudo insmod ramdisk.ko disk_name=<your_disk_name> disk_size=<size_in_mb>
 ```
-After loading you should see in `dmesg`:
+
+Check the kernel logs to verify succeful initialization:
 
 ```bash
-<your_disk_name>: Disk activate! Size: <your_disk_size_in_mb>
+dmesg | tail -n 2
+# Expected output: <your_disk_name>: Disk activate! Size: <size_in_mb> MB
 ```
-and the device will appear in:
+
+### 2. Format and Mount
+
+Before you can use the disk to store files, you need to create file system on it and mount it to a directory:
 
 ```bash
-lsblk
+sudo mkfs.ext4 /dev/<your_disk_name>
+sudo mkdir -p /mnt/ramdisk
+sudo mount /dev/<your_disk_name> /mnt/ramdisk
 ```
 
+Now you can read and write files inside `/mnt/ramdisk`
 
+### 3. Unload
+
+WARNING: Always unmount the device BEFORE removing the kernel module to prevent Kernel Panic!
+
+```bash
+sudo unmount /mnt/ramdisk
+sudo rmmod ramdisk
+```
 
 # Test
 
+The repository includes a C-based userspace testing utility (test_app) that writes 10MB of data to the raw block device, reads it back, verifies data integrity (encryption/decryption logic), and measures I/O speed.
+
 ```bash
 sudo insmod ramdisk.ko
-./test_app
+sudo ./test_app
 sudo rmmod ramdisk
 ```
 
