@@ -54,7 +54,7 @@ sudo rmmod ramdisk
 
 # Test
 
-The repository includes a C-based userspace testing utility (test_app) that writes 10MB of data to the raw block device, reads it back, verifies data integrity (encryption/decryption logic), and measures I/O speed.
+The repository includes a C-based userspace testing utility (test_app) that writes 10MB of data to the raw block device, reads it back, verifies data integrity, and measures I/O speed.
 
 ```bash
 sudo insmod ramdisk.ko
