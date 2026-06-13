@@ -31,6 +31,8 @@ dmesg | tail -n 2
 # Expected output: <your_disk_name>: Disk activate! Size: <size_in_mb> MB
 ```
 
+[!image](https://github.com/user-attachments/assets/98399604-e4cf-4cf0-a54c-5faab5b48b33)
+
 ### 2. Format and Mount
 
 Before you can use the disk to store files, you need to create file system on it and mount it to a directory:
