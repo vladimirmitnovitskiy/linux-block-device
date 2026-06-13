@@ -45,6 +45,8 @@ sudo mount /dev/<your_disk_name> /mnt/ramdisk
 
 Now you can read and write files inside `/mnt/ramdisk`
 
+<img width="2230" height="617" alt="Image" src="https://github.com/user-attachments/assets/38e6fd21-068f-4d75-b82e-3c442b1bef7b" />
+
 ### 3. Unload
 
 WARNING: Always unmount the device BEFORE removing the kernel module to prevent Kernel Panic!
@@ -53,6 +55,7 @@ WARNING: Always unmount the device BEFORE removing the kernel module to prevent 
 sudo unmount /mnt/ramdisk
 sudo rmmod ramdisk
 ```
+<img width="2228" height="197" alt="Image" src="https://github.com/user-attachments/assets/d7c2a3e2-7de8-4ae2-acbb-1bc22cffafe6" />
 
 # Test
 
@@ -63,6 +66,7 @@ sudo insmod ramdisk.ko
 sudo ./test_app
 sudo rmmod ramdisk
 ```
+<img width="2232" height="320" alt="Image" src="https://github.com/user-attachments/assets/e30f61f3-5e4e-4172-ab41-9dc71c09f0f1" />
 
 ## License
 
