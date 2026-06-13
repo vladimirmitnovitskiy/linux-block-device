@@ -31,7 +31,7 @@ dmesg | tail -n 2
 # Expected output: <your_disk_name>: Disk activate! Size: <size_in_mb> MB
 ```
 
-[!image](https://github.com/user-attachments/assets/98399604-e4cf-4cf0-a54c-5faab5b48b33)
+<img width="2242" height="1102" alt="Image" src="https://github.com/user-attachments/assets/98399604-e4cf-4cf0-a54c-5faab5b48b33" />
 
 ### 2. Format and Mount
 
